@@ -1,0 +1,4 @@
+repository=inmemory
+books=books.pickle
+clients=clients.pickle
+rentals=rentals.pickle
