@@ -1,0 +1,52 @@
+import services
+import domain
+import repo
+import repos
+import UI
+import tests
+import services2
+import validations
+from services2 import Service
+from domain import Book,Client,Rental
+
+with open("settings.txt", 'r') as readInitialFile:
+    infoLines = readInitialFile.readlines()
+    settings = []
+    for line in infoLines:
+        line = line.split('=')
+        line[1] = line[1].replace("\n", "")
+        settings.append(line[1])
+
+setting_fromFile = settings[0]
+books_fromFile = settings[1]
+clients_fromFile = settings[2]
+rentals_fromFile = settings[3]
+
+if setting_fromFile == "inmemory":
+    repoBook = repos.RepoBook()
+    repoClient = repos.RepoClients()
+    repoRental = repos.RepoRental()
+    repos.RepoBook.generate_books(repoBook)
+    repos.RepoClients.generate_clients(repoClient)
+    service = services2.Service(repoBook, repoClient, repoRental, validations)
+    ui = UI.Console(service)
+    UI.Console.ui_print_menu(object)
+    ui.run()
+
+if setting_fromFile == "textfiles":
+    repoBook = repos.RepoBookFile(books_fromFile,Book.read_book,Book.write_book)
+    repoClient = repos.RepoClientFile(clients_fromFile,Client.read_client,Client.write_client)
+    repoRental = repos.RepoRentalFile(rentals_fromFile,Rental.read_rental,Rental.write_rental)
+    service = services2.Service(repoBook, repoClient, repoRental, validations)
+    ui = UI.Console(service)
+    UI.Console.ui_print_menu(object)
+    ui.run()
+
+if setting_fromFile == "binaryfiles":
+    repoBook = repos.RepoBookBinary(books_fromFile,domain.Book.read_book,domain.Book.write_book)
+    repoClient = repos.RepoClientBinary(clients_fromFile,domain.Client.read_client,domain.Client.write_client)
+    repoRental = repos.RepoRentalsBinary(rentals_fromFile,domain.Rental.read_rental,domain.Rental.write_rental)
+    service = services2.Service(repoBook, repoClient, repoRental, validations)
+    ui = UI.Console(service)
+    UI.Console.ui_print_menu(object)
+    ui.run()
