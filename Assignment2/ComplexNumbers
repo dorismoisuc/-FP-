@@ -1,0 +1,133 @@
+class Complex:
+    def __init__(self, real, imaginary):
+        self.real = real
+        self.imaginary = imaginary
+
+    def getReal(self):
+        return self.real
+
+    def getImaginary(self):
+        return self.imaginary
+
+def turnComplexList(inputString):
+    if '+' in inputString:
+        return inputString.split('+')
+    elif '-' in inputString:
+        var = inputString.split('-')
+        var[1] = '-'+var[1]
+        return var
+    else:
+        print ('Bad input.')
+        return
+
+
+def ui_add_complex(listc):
+    inputString = ''
+    print("Insert complex number, ex: 5 + 2i:")
+    print("Type 'done' to finish inserting")
+    while inputString != 'done':
+        inputString = input("** ")
+        if inputString != 'done':
+            try:
+                complexNumber = turnComplexList(inputString)
+                if complexNumber is not None:
+                    p = Complex(complexNumber[0], complexNumber[1])
+                    listc.append(p)
+            except ValueError:
+                print("Invalid input. Retry")
+
+
+def ui_print(listc):
+    for it in listc:
+        print (str(it.getReal()) + "," + it.getImaginary())
+
+#prints the sequence starting at startPoint, ending at endPoint
+        
+def printSeq(startPoint, endPoint, listc):
+    for it in range(startPoint, endPoint):
+        print (str(listc[it].getReal()) + "," + listc[it].getImaginary())
+        
+#returns the longest sequence of numbers with a strictly increasing real part
+        
+def StrictlyIncreasingPart(listc):
+    length = 1
+    lengthMax = 1
+    poz = -1 
+    pozi = 0 
+    poziMax = 0
+    pozMax = -1
+    for it in range(len(listc)-1):
+        if (int(listc[it].getReal()) < int(listc[it+1].getReal())):
+            length+=1
+            poz=it
+        else:
+            if(length>lengthMax):
+                lengthMax = length
+                poziMax = pozi
+                pozMax = poz
+            pozi = it+1
+            length = 1
+    if(length>lengthMax):
+                lengthMax = length
+                poziMax = pozi
+                pozMax = poz
+    pozMax += 2
+    if poziMax == 1 and listc[0].getReal() < listc[1].getReal():
+        poziMax = 0
+    printSeq(poziMax,pozMax,listc)
+
+
+def realPart(listc):
+    length = 1
+    lengthMax = 1
+    poz = -1 
+    pozi = 0 
+    poziMax = 0
+    pozMax = -1
+    for it in range(len(listc)-1):
+        if ('0i' in listc[it].getImaginary() and '0i' in listc[it+1].getImaginary()):
+            length+=1
+            poz=it
+        else:
+            if(length>lengthMax):
+                lengthMax = length
+                poziMax = pozi
+                pozMax = poz
+            pozi = it+1
+            length = 1
+    if(length>lengthMax):
+                lengthMax = length
+                poziMax = pozi
+                pozMax = poz
+            
+    pozMax += 2
+    if poziMax == 1 and '0i' in listc[0].getImaginary() and '0i' in listc[1].getImaginary():
+        poziMax = 0
+    printSeq(poziMax,pozMax,listc)
+
+def main():
+    listc = []
+    print("If you want to print the numbers type print")
+    print("If you want to add complex numbers type add")
+    print("If you want to see the longest sequence of numbers with a strictly increasing real part type increase")
+    print("If you want to see the longest sequence of real numbers type real")
+    print("If you want to exit type exit")
+    commands = {
+        "print": ui_print,
+        "add": ui_add_complex,
+        "increase":StrictlyIncreasingPart,
+        "real":realPart
+    }
+    for x in range(0, 10):
+        listc.append(Complex(x, str(x) + 'i'))
+    while True:
+        cmd = input("*")
+        if cmd == "exit":
+            return
+        if cmd in commands:
+            commands[cmd](listc)
+        else:
+            print ("non-existant command!")
+
+
+main()
